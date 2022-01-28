@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block main %}
+          <h1>ISU Lunch Tickets</h1>
+          <h4>Purchase ISU lunch tickets online</h4>
+
+          <div class="pasha-image">
+            <img
+              src="/favicon.ico"
+              width="160"
+              height="160"
+            />
+
+          </div>
+
+        <form action="/tickets/purchase" method="GET">
+          <button type="submit" id="submit" style="background-color: #77FF5C">Purchase Tickets</button>
+        </form>
+        <form action="/tickets/manage" method="GET">
+          <button type="submit" id="submit" style="background-color: #478EFF">Card Management Page</button>
+        </form>
+        {% if data["admin"] == '1' %}
+        <form action="/admin/" method="GET">
+          <button type="submit" id="submit" style="background-color: #478EFF">Admin Access</button>
+        </form>
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ISU · Ticketing System</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script defer data-domain="tickets.isu.ac.ug" src="https://plausible.io/js/plausible.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="/index.js" defer></script>
+    <script src="/admin/js/qrious.min.js"></script>
+    <script>
+        function isNumberKey(evt){
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+      </script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">ISU Lunch Card Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/tickets">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/tickets/purchase">Purchase Tickets</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://ramzihijjawi.gitbook.io/isu-ticket-system/">FAQ</a>
+            </li>
+            {% if data != False %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/login">Login</a>
+            </li>
+            {% endif %}
+          </ul>
+          <span class="navbar-text">
+            {% if data != False %}
+            {% if data["admin"] == '1' %}
+            Logged in as {{ data["fullname"] }} (Admin Account) | Balance: <b>{{ data["lunchtickets"] }}</b> tickets | ID: {{ data["card_uid"] }} |
+            {% else %}
+            Logged in as {{ data["fullname"] }} | Balance: <b>{{ data["lunchtickets"] }}</b> tickets | ID: {{ data["card_uid"] }} |
+            {% endif %}
+            {% endif %}
+          </span>
+          {% if data["frozen"] == '1' %}
+            <span class="navbar-text" style="color:red">
+              &#128272; LOCKED
+            </span>
+          {% elif data["frozen"] == '0' %}
+            <span class="navbar-text" style="color:seagreen">
+               &#128275; OK
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+    <div class="sr-root">
+      <div class="sr-main">
+        <section class="container">
+          <form>
+            <div class="">
+              {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+              {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+              </div>
+            </div>
+              {% endfor %}
+              {% endif %}
+              {% endwith %}
+            <div>
+              <h5>Instructions!</h5>
+              <ul>
+                <li>Download <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US" target="_blank">Google Authenticator</a> on your mobile.</li>
+                <li>Add a new account by using the <strong>QR code</strong> or <strong>Secret token</strong> method in the app.</li>
+                <li>Provide the required details (name, secret key).</li>
+                <li>Select time-based authentication.</li>
+                <li>Submit the generated key in the form.</li>
+              </ul>
+            </div>
+            <section class="container2">
+              <div class="pasha-image2">
+                <canvas id="qr"></canvas>
+              </div>
+            </section>
+            <div class="quantity-setter"></div>
+            <section class="container2">
+
+              <div class="form-group">
+                <label for="secret">Secret Token</label>
+                <input type="text" class="form-control" id="secret" value="{{ secret }}" readonly>
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary" id="toggle" onclick="hideshow()">Show Secret Token</button>
+              </div>
+            </section>
+          </form>
+          <div class="quantity-setter"></div>
+          <section class="container2">
+          {% if data["has_2fa"] == 0 %}
+            <form method="POST">
+              <div class="form-group">
+                <label for="otp">Generated OTP</label>
+                <input type="hidden" name="secret" value="{{ secret }}" required>
+                <input type='hidden' class="form-control" name='2fa' value='enable' required>
+                <input type="text" class="form-control" id="otp" onkeypress="return isNumberKey(event)" name="otp" maxlength="6" required>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Enable 2FA</button>
+              </div>
+          {% elif data["has_2fa"] == 1 %}
+            <form method="POST">
+              <div class="form-group">
+                <label for="otp">Generated OTP</label>
+                <input type="hidden" name="secret" value="{{ secret }}" required>
+                <input type='hidden' class="form-control" name='2fa' value='disable' required>
+                <input type="text" class="form-control" name="otp" onkeypress="return isNumberKey(event)" maxlength="6" required>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Disable 2FA</button>
+              </div>
+          {% endif %}
+
+            </form>
+          </section>
+            <div class="text-center">
+              <form action="/tickets/" method="GET">
+                <button type="submit" class="btn btn-primary" style="background-color:#464F51">Go Back</button>
+              </form>
+            </div>
+
+
+
+        </section>
+      </div>
+    </div>
+    <script>
+      function copySecret() {
+        /* Get the text field */
+        var copyText = document.getElementById("secret");
+
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        alert("Successfully copied your 2FA secret token!");
+      }
+    </script>
+    <script>
+      (function() {
+        var qr = new QRious({
+          element: document.getElementById('qr'),
+          value: '{{ qr }}'
+        });
+      })();
+      </script>
+      <script type="text/javascript">
+          var secret = document.getElementById("secret").value;
+          window.onload = function() {
+            secretlen = secret.length;
+            b = '';
+            for (var i = 0; i<secretlen; i++){
+              b += '•';
+            }
+          document.getElementById("secret").value = b;
+          document.getElementById("toggle").value = 'Show Secret Token';
+      }
+      </script>
+      <script>
+        function hideshow() {
+          var s = document.getElementById("secret");
+          var button = document.getElementById("toggle");
+
+          if (button.innerHTML == 'Hide Secret Token') {
+            s.value = b;
+            button.innerHTML = "Show Secret Token";
+          }
+          else if (button.innerHTML == 'Show Secret Token') {
+            s.value = secret;
+            button.innerHTML = "Hide Secret Token";
+          }
+        }
+        </script>
+  </body>
+</html>

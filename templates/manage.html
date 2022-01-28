@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block main %}
+<div>
+    <h1>Card Management</h1>
+    <h4>Manage your card settings online!</h4>
+
+    <div class="pasha-image">
+      <img
+        src="/favicon.ico"
+        width="160"
+        height="160"
+      />
+
+    </div>
+  </div>
+  <form action="/tickets/manage" method="POST">
+    <input type="hidden" id="action" value="check_balance" name="action"/>
+    <!--<p class="sr-legal-text">Account status:</p>-->
+    <!--<p class="sr-legal-text">Full Name: {{ fname }}</p>-->
+    <!--<p class="sr-legal-text">Number of tickets: {{ tx }}</p>-->
+    <!--<p class="sr-legal-text">Lock Status: {{ status }} </p>-->
+    <!--<p class="sr-legal-text">ID: {{ card }} </p>-->
+    <button type="submit" id="submit" style="background-color:#99C24D">Check Balance</button>
+  </form>
+  <form action="/tickets/manage" method="POST">
+    <input type="hidden" id="action" value="history" name="action"/>
+    <button type="submit" id="submit" style="background-color:#D81E5B">Account History</button>
+  </form>
+  {% if data["frozen"] == '0' %}
+    <form action="/tickets/manage" method="POST">
+      <input type="hidden" id="action" value="lock" name="action"/>
+      <button type="submit" id="submit" style="background-color:#F18F01">Lock Account</button>
+    </form>
+    <form action="/tickets/manage" method="POST">
+      <input type="hidden" id="action" value="send_user" name="action"/>
+      <button type="submit" id="submit" style="background-color:#FFA500">Send Tickets</button>
+    </form>
+  {% elif data["frozen"] == '1' %}
+    <form action="/tickets/manage" method="POST">
+      <input type="hidden" id="action" value="unlock" name="action"/>
+      <button type="submit" id="submit" style="background-color:#F18F01">Unlock Account</button>
+    </form>
+  {% endif %}
+  <form action="/tickets/2fa" method="get">
+    <button type="submit" id="submit" style="background-color:#006E90">2 Factor Authentication</button>
+  </form>
+  <form action="/tickets/manage" method="POST">
+    <input type="hidden" id="action" value="changepassword" name="action"/>
+    <button type="submit" id="submit" style="background-color:#006E90">Change Password</button>
+  </form>
+  <form action="/tickets/" method="GET">
+    <button type="submit" id="submit" style="background-color:#464F51">Go Home</button>
+  </form>
+{% endblock %}

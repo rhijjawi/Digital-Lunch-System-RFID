@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ISU Ticket System</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/global.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://widget.northeurope.cloudapp.azure.com:9443/v0.1.0/mobile-money-widget-mtn.js"></script>
+    <script src="./index.js" defer></script>
+  </head>
+
+  <body>
+    <div class="sr-root">
+      <div class="sr-main">
+        <section class="container">
+          <div>
+            <h1>ISU Lunch Tickets</h1>
+            <h4>Check how many tickets you have left!</h4>
+
+            <div class="pasha-image">
+              <img
+                src="https://www.isu.ac.ug/gsd-logo.png"
+                width="160"
+                height="160"
+              />
+            </div>
+          </div>
+
+          <form method="POST" action="/tickets/momoney">
+            <div
+            id="my-unique-identifer"
+            class="mobile-money-qr-payment"
+            data-api-user-id="b12d7b22-3057-4c8e-ad50-63904171d18c"
+            data-amount="100.98"
+            data-currency="EUR"
+            data-external-id="144-123-323"
+          >
+          </div>
+            <div class="quantity-setter">
+              <input type="text" name="phonenumber" required=True placeholder="Mobile Money Number" value="" />
+              <input type="text" name="fname" placeholder="Full Name" required=True value="" />
+            </div>
+              <input type="hidden" name="amount" value="3400" />
+              <input type="hidden" name="currency" value="UGX" />
+              <div class="quantity-setter">
+              <input type="text" id="card-id" placeholder="ID number" maxlength="8" required=True value="" name="card-id"/>
+              </div>
+            <input type="hidden" name="redirect_url" value="https://db0d-41-210-159-12.ngrok.io/tickets/success" />
+          <button type="submit" id="submit">Checkout</button> 
+          </form>
+          <form action="/tickets/purchase">
+            <button type="submit" id="submit" style="background-color:#3da35d">Purchase more tickets</button>
+          </form>
+          <form action="/tickets" method="GET">
+            <button type="submit" id="submit">Go Home</button>
+          </form>
+        </section>
+
+        <div id="error-message"></div>
+      </div>
+    </div>
+  </body>
+</html>

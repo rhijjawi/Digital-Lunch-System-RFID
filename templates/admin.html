@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block main %}
+<div>
+  <h1>ISU Admin Panel</h1>
+  <h4>Purchase ISU lunch tickets online</h4>
+
+  <div class="pasha-image">
+    <img
+      src="/settings.png"
+      width="160"
+      height="160"
+    />
+
+  </div>
+</div>
+
+  <form action="/admin/table" method="POST">
+    <input type="hidden" id="action" value="list_users" name="action"/>
+    <button type="submit" id="submit" style="background-color:#3fa7a5">All Users</button>
+  </form>
+  <!--<form action="/tickets/query" method="GET">
+    <button type="submit" id="submit">Users</button>
+  </form> -->
+  <form action="/admin/action" method="POST">
+    <input type="hidden" id="action" value="add_user" name="action"/>
+    <button type="submit" id="submit">Add Users</button>
+  </form>
+</form>
+<form action="/admin/table" method="POST">
+  <input type="hidden" id="action" value="transaction" name="action"/>
+  <button type="submit" id="submit">Transaction History</button>
+</form>
+
+{% endblock %}

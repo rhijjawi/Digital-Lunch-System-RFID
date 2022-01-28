@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block main %}
+{% if action == "add_user" %}
+  <div>
+    {% if action == "add_user" %}
+      <h1>Add User</h1>
+      <h4>Add a user to the system</h4>
+    {% else %}
+      <h1>ISU Lunch Tickets</h1>
+    {% endif %}
+
+    <div class="pasha-image">
+      <img
+        src="/favicon.ico"
+        width="160"
+        height="160"
+      />
+    </div>
+  </div>
+
+  <form action="/admin/" method="POST">
+    <div class="quantity-setter">
+      <input type="text" id="card-id" placeholder="ID number"  onkeypress="return isNumberKey(event)" maxlength="8" required=True value="{{value}}" name="card-id"/>
+      <input type="hidden" id="action" value="{{action}}" name="action"/>
+    </div>
+    <div class="quantity-setter">
+      <input type="text" id="fname" placeholder="Full Name" required=True name="fname"/>
+      <input type="hidden" id="action" value="{{action}}" name="action"/>
+    </div>
+    <div class="quantity-setter">
+      <input type="password" id="password" placeholder="Password" required=True name="password" style="\{\appearance: none; border: 1px solid var(--gray-border);padding: 5px 12px;height: 44px;width: 100%;transition: box-shadow 0.2s ease;background: white;-moz-appearance: none;-webkit-appearance: none;color: #32325d;"/>
+    </div>
+    <p class="sr-legal-text">Enter the 8 digit number on the front of the student's school ID + The student's password</p>
+    <button type="submit" id="submit" style="background-color:#0B94B3">Add User</button>
+  </form>
+  <form action="/tickets/manage" method="GET">
+    <button type="submit" id="submit" style="background-color: #464F51">Go Back!</button>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

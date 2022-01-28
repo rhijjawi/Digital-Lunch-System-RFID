@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block main %}
+{% if logintype == "user" %}
+  <h1>Login</h1>
+{% else %}
+  <h1>Admin</h1>
+{% endif %}
+<h4>You are not logged in!</h4>
+
+<div class="">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    {{ message }}
+  </div>
+</div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+<div class="pasha-image">
+  <img
+    src="/favicon.ico"
+    width="160"
+    height="160"
+  />
+
+</div>
+
+
+<form action="/login/" method="POST">
+  <div class="quantity-setter">
+      <input type="text" id="card-id" placeholder="{{ph}}" required=True onkeypress="return isNumberKey(event)" maxlength="8" value="{{value}}" name="username"/>
+  </div>
+  <div class="quantity-setter">
+      {% if mfa == 0 %}
+      <input type="hidden" name="login" value="standard" required>
+      {% endif %}
+      <input type="password" id="password" placeholder="Password" required=True name="password" style="\{\appearance: none; border: 1px solid var(--gray-border);padding: 5px 12px;height: 44px;width: 100%;transition: box-shadow 0.2s ease;background: white;-moz-appearance: none;-webkit-appearance: none;color: #32325d;"/>
+
+  </div>
+  {% if mfa == 1 %}
+  <div class="quantity-setter">
+      <input type="hidden" name="login" value="mfa" required>
+      <input type="text" placeholder="2FA Code" required=True name="mfa" autocomplete="off" style="\{\appearance: none; border: 1px solid var(--gray-border);padding: 5px 12px;height: 44px;width: 100%;transition: box-shadow 0.2s ease;background: white;-moz-appearance: none;-webkit-appearance: none;color: #32325d;"/>
+  </div>
+  {% endif %}
+  <button type="submit" id="submit" style="background-color:rgba(239, 10, 10, 0.749)">Login</button>
+</form>
+<form action="/tickets/" method="GET">
+  <button type="submit" id="submit" style="background-color:#464F51">Go Back</button>
+</form>
+
+{% endblock %}

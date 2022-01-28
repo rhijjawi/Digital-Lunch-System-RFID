@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block main %}
+  <div>
+    <h1>ISU Lunch Tickets</h1>
+    <h4>Check how many tickets you have left!</h4>
+
+    <div class="pasha-image">
+      <img
+        src="/favicon.ico"
+        width="160"
+        height="160"
+      />
+    </div>
+  </div>
+
+  <form action="/tickets/query_result" method="POST">
+    <div class="quantity-setter">
+      <input type="text" id="card-id" placeholder="ID number"  onkeypress="return isNumberKey(event)" maxlength="8" required=True value="{{value}}" name="card-id"/>
+
+    </div>
+    <p class="sr-legal-text">Enter the 8 digit number on the front of your school ID </p>
+    <button type="submit" id="submit" style="background-color:#0B94B3">Check number of tickets</button>
+  </form>
+  <form action="/tickets/manage" method="GET">
+    <button type="submit" id="submit" style="background-color: #464F51">Go Back</button>
+  </form>
+</section>
+{% endblock %}

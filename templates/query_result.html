@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block main %}
+<div>
+  <h1>ISU Lunch Tickets</h1>
+  <h4>Check how many tickets you have left!</h4>
+
+  <div class="pasha-image">
+    <img
+      src="/favicon.ico"
+      width="160"
+      height="160"
+    />
+  </div>
+</div>
+
+<form action="/tickets/purchase">
+  <div class="quantity-setter">
+    <input type="text" id="card-id" value="{{fname}} has: {{value}} tickets" name="card-id" disabled=True/>
+  </div>
+  <p class="sr-legal-text">Each Lunch "Ticket" is redeemable for one school lunch offered by the Kampala Food Network.</p>
+  <button type="submit" id="submit" style="background-color: #1ADB6E">Purchase more tickets</button>
+</form>
+<form action="/tickets/manage">
+  <button type="submit" id="submit" style="background-color: #464F51">Go Back</button>
+</form>
+{% endblock %}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>{{ title }}</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/cio" href="/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/admin/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/admin/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/admin/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/admin/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/admin/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/admin/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/admin/css/main.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!--===============================================================================================-->
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">ISU Lunch Card Management</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="/tickets">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="/tickets/purchase">Purchase Tickets</a>
+					</li>
+					{% if data != False %}
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="/login">Login</a>
+					</li>
+					{% endif %}
+					<!--<li class="nav-item">
+						<a class="nav-link" href="#">Features</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Pricing</a>
+					</li> -->
+				</ul>
+				<span class="navbar-text">
+					{% if data != False %}
+					{% if data["admin"] == '1' %}
+					Logged in as {{ data["fullname"] }} (Admin Account) | Balance: <b>{{ data["lunchtickets"] }}</b> tickets | ID: {{ data["card_uid"] }} |
+					{% else %}
+					Logged in as {{ data["fullname"] }} | Balance: <b>{{ data["lunchtickets"] }}</b> tickets | ID: {{ data["card_uid"] }} |
+					{% endif %}
+					{% endif %}
+				  </span>
+				  {% if data["frozen"] == '1' %}
+					<span class="navbar-text" style="color:red">
+					  &#128272; LOCKED
+					</span>
+				  {% elif data["frozen"] == '0' %}
+				  <span class="navbar-text" style="color:seagreen">
+					 &#128275; OK
+				  </span>
+				  {% endif %}
+				
+
+
+
+
+			</div>
+		</div>
+	</nav>
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver1 m-b-110">
+					<div class="table100-head">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									{% for i in headers %}
+										<th class="cell100 column{{loop.index}}">{{ i }}</th>
+									{% endfor %}
+								</tr>
+							</thead>
+						</table>
+					</div>
+
+					<div class="table100-body ">
+						<table>
+							<tbody>
+								{% if action == "list_users" %}
+									{% for i in users %}
+										<tr class="row100 body">
+											<td class="cell100 column1">{{ i["fullname"] }}</td>
+											<td class="cell100 column2">{{ i["card_uid"] }}</td>
+											<td class="cell100 column3">{{ i["lunchtickets"] }}</td>
+											{% if i["frozen"] == "1" %}
+												<td class="cell100 column4" style="color:#944654">Frozen</td>
+											{% else %}
+												<td class="cell100 column4" style="color:#0B5D1E">OK</td>
+											{% endif %}
+										</tr>
+									{% endfor %}
+								{% elif action == "history" %}
+								<tr class="row100 body">
+									<td class="cell100 column1"></td>
+									<td class="cell100 column2"></td>
+									<td class="cell100 column3"></td>
+									<td class="cell100 column4"><b>You currently have {{ current }} tickets</b></td>
+								</tr>
+									{% for i in users %}
+											<tr class="row100 body">
+												<td class="cell100 column1">{{ i["date_time"] }}</td>
+	<!--											<td class="cell100 column2">{{ user_id }}</td>-->
+												<td class="cell100 column2">{{ i["tx_id"] }}</td>
+												{% if i["tx_val"].startswith('-') %}
+												<td class="cell100 column3" style="color:#944654">{{ i["tx_val"] }} tickets</td>
+												{% elif i["tx_val"].startswith('+') %}
+												<td class="cell100 column3" style="color:#0B5D1E">{{ i["tx_val"] }} tickets</td>
+												{% else %}
+												<td class="cell100 column3" style="color: rgb(255, 153, 0);">{{ i["tx_val"] }} tickets</td>
+												{% endif %}
+												<td class="cell100 column4" >{{ i["description"] }}</td>
+											</tr>
+									{% endfor %}
+								{% elif action == "transaction"%}
+									{% for i in users %}
+										{% set tx_val = i["tx_val"] %}
+										<tr class="row100 body">
+											<td class="cell100 column1">{{ i["date_time"] }}</td>
+											<td class="cell100 column3">{{ i["user_id"] }}</td>
+											<td class="cell100 column4">{{ i["tx_id"] }}</td>
+											{% if tx_val.startswith('-') %}
+												<td class="cell100 column5" style="color:#944654">{{ tx_val }} tickets</td>
+											{% elif tx_val.startswith('+') %}
+												<td class="cell100 column5" style="color:#0B5D1E">{{ tx_val }} tickets</td>
+											{% else %}
+												<td class="cell100 column5" style="color: rgb(255, 153, 0);">{{ tx_val }} tickets</td>
+											{% endif %}
+												<td class="cell100 column6">{{ i["description"] }}</td>
+										</tr>
+									{% endfor %}
+								{% endif %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+
+
+	</script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+</html>

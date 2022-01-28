@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block main %}
+
+{% if action == 'send' %}
+    <div>
+        <h1>Send Tickets to a Friend</h1>
+        <h4>Send tickets to someone!</h4>
+
+        <div class="pasha-image">
+        <img
+            src="https://www.isu.ac.ug/gsd-logo.png"
+            width="160"
+            height="160"
+        />
+        </div>
+    </div>
+
+    <form action="/tickets/manage" method="POST">
+        <div class="quantity-setter">
+            <input type="text" id="to" placeholder="Recipient" required=True name="to" maxlength="8" />
+        </div>
+        <div class="quantity-setter">
+            <input type="hidden" id="action" value="{{action}}" name="action"/>
+            <input type="text" id="number_tx_to_send" placeholder="Number of Tickets to Send" onkeypress="return isNumberKey(event)" maxlength="8" autocomplete="off" required=True name="number_tx_to_send"/>
+        </div>
+
+        <p class="sr-legal-text"></p>
+        <button type="submit" id="submit">Send tickets</button>
+    </form>
+
+{% elif action == 'changepassword' %}
+    <div>
+        <h1>Change your password</h1>
+        <h4>Change your access password</h4>
+
+        <div class="pasha-image">
+        <img
+            src="/favicon.ico"
+            width="160"
+            height="160"
+        />
+        </div>
+    </div>
+
+    <form action="/tickets/manage" method="POST">
+        <div class="quantity-setter">
+            <input type="hidden" id="action" value="change_password" name="action"/>
+            <input type="password" id="password" autocomplete="current-password" placeholder="Current Password" required=True name="password" style="\{\appearance: none; border: 1px solid var(--gray-border);padding: 5px 12px;height: 44px;width: 100%;transition: box-shadow 0.2s ease;background: white;-moz-appearance: none;-webkit-appearance: none;color: #32325d;"/>
+        </div>
+        <div class="quantity-setter">
+            <input type="password" id="newpassword" autocomplete="new-password" placeholder="New Password" required=True name="newpassword" style="\{\appearance: none; border: 1px solid var(--gray-border);padding: 5px 12px;height: 44px;width: 100%;transition: box-shadow 0.2s ease;background: white;-moz-appearance: none;-webkit-appearance: none;color: #32325d;"/>
+        </div>
+        <p class="sr-legal-text"></p>
+        <button type="submit" id="submit">Change Password</button>
+    </form>
+
+{% else %}
+    <button onclick="window.location.href = '/tickets/manage';">Go Home</button>
+{% endif %}
+<form action="/tickets/manage" method="GET">
+    <button type="submit" id="submit" style="background-color:#464F51">Go Back</button>
+</form>
+{% endblock %}

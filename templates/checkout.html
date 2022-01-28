@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block main %}
+<div>
+  <h1>ISU Lunch Tickets</h1>
+  <h4>Purchase ISU lunch tickets online</h4>
+
+  <div class="pasha-image">
+    <img
+      src="/favicon.ico"
+      width="160"
+      height="160"
+    />
+  </div>
+</div>
+
+<form action="/tickets/create-checkout-session" method="POST">
+  <div class="quantity-setter">
+    <input type="text" id="card-id" value="" onkeypress="return isNumberKey(event)" maxlength="8" placeholder="ID number" name="card-id" required=True/>
+  </div>
+
+  <p class="sr-legal-text">Enter the 8 digit number on the front of your school ID </p>
+  <p class="sr-legal">All payments are encrypted & powered by Stripe &#169;</p>
+  <button type="submit" id="submit" style="background-color:#3da35d">Purchase tickets</button>
+</form>
+<form action="/tickets" method="GET">
+  <button type="submit" id="submit">Go Home</button>
+</form>
+{% endblock %}
